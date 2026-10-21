@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Northwind Demo Bank</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{margin:0;font:15px/1.5 system-ui,sans-serif;background:#f4f6f8;color:#1d2330}
+header{background:#0f2747;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:24px}
+header nav button{background:none;border:0;color:#cfe0ff;font:inherit;cursor:pointer;padding:6px 10px;border-radius:6px}
+header nav button[aria-current=page]{background:#1f3f6e;color:#fff}
+main{max-width:980px;margin:24px auto;padding:0 16px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px #0001}
+.bal{font-size:24px;font-weight:700}form{background:#fff;padding:20px;border-radius:10px;display:grid;gap:12px;max-width:440px}
+label{display:grid;gap:4px;font-weight:600}input,select{font:inherit;padding:8px;border:1px solid #c5ccd6;border-radius:6px}
+button.primary{background:#1a5ad7;color:#fff;border:0;padding:10px;border-radius:6px;font:inherit;cursor:pointer}
+.msg{padding:10px;border-radius:6px}.error{background:#fde8e8;color:#9b1c1c}.success{background:#e3f6e8;color:#14532d}
+table{width:100%;background:#fff;border-collapse:collapse;border-radius:10px;overflow:hidden}th,td{padding:8px 12px;border-bottom:1px solid #eee;text-align:left}
+#landing{text-align:center;padding:90px 20px}
+</style></head>
+<body>
+<div id="landing"><h1>Northwind Demo Bank</h1><p>Synthetic data only.</p><button class="primary" id="enter">Enter Demo</button></div>
+<div id="app" hidden>
+<header><strong>Northwind</strong><nav>
+ <button data-view="dashboard">Dashboard</button><button data-view="transfer">Transfer</button><button data-view="transactions">Transactions</button>
+</nav></header>
+<main>
+ <section id="view-dashboard"><h2>Accounts</h2><div class="cards" id="cards"></div></section>
+ <section id="view-transfer" hidden><h2>Transfer money</h2>
+  <form id="transfer-form" novalidate>
+   <label>From account<select id="from" name="from"></select></label>
+   <label>To account<select id="to" name="to"></select></label>
+   <label>Amount<input id="amount" name="amount" inputmode="decimal" placeholder="0.00"></label>
+   <label>Memo (optional)<input id="memo" name="memo" maxlength="40"></label>
+   <button class="primary" type="submit" id="submit-transfer">Transfer</button>
+   <div id="transfer-msg"></div>
+  </form>
+  <h3>Current balances</h3><div class="cards" id="cards-t"></div>
+ </section>
+ <section id="view-transactions" hidden><h2>Transactions</h2>
+  <label style="max-width:220px">Type<select id="type-filter" name="type"><option value="all">All</option><option value="credit">Credit</option><option value="debit">Debit</option></select></label><br>
+  <table id="tx-table"><thead><tr><th>Date</th><th>Account</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead><tbody></tbody></table>
+ </section>
+</main></div>
+<script>
+const $ = s => document.querySelector(s); const money = n => (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+let accounts = [];
+async function loadAccounts(){ accounts = await (await fetch('/api/accounts')).json();
+  const html = accounts.map(a => `<div class="card"><div>${a.name}</div><small>${a.number}</small><div class="bal" data-testid="balance-${a.id}">${money(a.balance)}</div></div>`).join('');
+  $('#cards').innerHTML = html; $('#cards-t').innerHTML = html;
+  for (const id of ['#from','#to']) { const cur = $(id).value; $(id).innerHTML = accounts.map(a => `<option value="${a.id}">${a.name} (${a.number})</option>`).join(''); if (cur) $(id).value = cur; }
+  if (!$('#to').dataset.init) { $('#to').selectedIndex = 1; $('#to').dataset.init = 1; } }
+async function loadTx(){ const t = $('#type-filter').value; const rows = await (await fetch('/api/transactions?type=' + t)).json();
+  const name = id => (accounts.find(a => a.id === id) || {}).name || id;
+  $('#tx-table tbody').innerHTML = rows.map(r => `<tr><td>${r.date}</td><td>${name(r.account)}</td><td>${r.description}</td><td>${r.type}</td><td>${money(r.amount)}</td></tr>`).join(''); }
+function show(v){ for (const s of ['dashboard','transfer','transactions']) $('#view-' + s).hidden = s !== v;
+  document.querySelectorAll('nav button').forEach(b => b.dataset.view === v ? b.setAttribute('aria-current','page') : b.removeAttribute('aria-current'));
+  location.hash = '#/' + v; if (v === 'transactions') loadTx(); else loadAccounts(); }
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.view));
+$('#type-filter').onchange = loadTx;
+$('#enter').onclick = () => { $('#landing').hidden = true; $('#app').hidden = false; show((location.hash.slice(2)) || 'dashboard'); };
+$('#transfer-form').onsubmit = async e => { e.preventDefault(); const msg = $('#transfer-msg'); msg.className=''; msg.textContent=''; msg.removeAttribute('role');
+  const amount = $('#amount').value.trim();
+  if (!amount) { msg.className = 'msg error'; msg.setAttribute('role','alert'); msg.textContent = 'Enter an amount'; return; }
+  $('#submit-transfer').disabled = true; $('#submit-transfer').textContent = 'Processing…';
+  const r = await fetch('/api/transfer', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({from: $('#from').value, to: $('#to').value, amount, memo: $('#memo').value})});
+  const body = await r.json(); $('#submit-transfer').disabled = false; $('#submit-transfer').textContent = 'Transfer';
+  if (!r.ok) { msg.className = 'msg error'; msg.setAttribute('role','alert'); msg.textContent = body.error; return; }
+  msg.className = 'msg success'; msg.setAttribute('role','status'); msg.textContent = `Transfer successful. Reference ${body.reference}`;
+  $('#amount').value = ''; await loadAccounts(); };
+if (location.hash.length > 2) { /* deep link still requires Enter Demo */ }
+</script></body></html>

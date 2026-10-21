@@ -1,0 +1,3609 @@
+{
+  "app_summary": "DemoBank: a fictional banking dashboard (one demo customer, checking + savings) with session entry/logout, account detail, transfers between owned accounts, filterable history and a profile page.",
+  "requirements": [
+    {
+      "id": "AUTH-01",
+      "title": "Enter Demo opens the dashboard",
+      "text": "The landing page's Enter Demo action opens the dashboard with no password.",
+      "prd_quote": "Enter Demo action. It opens the demo dashboard",
+      "category": "access",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "AUTH-02",
+      "title": "Header shows active customer and Log out",
+      "text": "The header identifies the demo customer and offers Log out.",
+      "prd_quote": "header identifies the active demo customer",
+      "category": "access",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "AUTH-03",
+      "title": "Logout returns to landing and protects views",
+      "text": "After logout the user is on the landing page; protected views cannot be reached by direct navigation, Back or refresh.",
+      "prd_quote": "Protected dashboard views should not remain usable after logout",
+      "category": "access",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "AUTH-04",
+      "title": "Refresh preserves a valid session",
+      "text": "Reloading during a valid session keeps the user signed in.",
+      "prd_quote": "Refreshing while in a valid demo session should preserve that session",
+      "category": "access",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "DASH-01",
+      "title": "Accounts listed with name, mask, type, balance",
+      "text": "Dashboard shows checking and savings with readable name, masked id, type and USD balance.",
+      "prd_quote": "Each account displays a readable account name, a masked account identifier",
+      "category": "accounts",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "DASH-02",
+      "title": "Balances shown to two decimals",
+      "text": "Every balance is shown in USD with exactly two decimals.",
+      "prd_quote": "Balances are displayed to two decimal places",
+      "category": "accounts",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "DASH-03",
+      "title": "No full account identifier exposed",
+      "text": "The UI never shows a full account identifier.",
+      "prd_quote": "The UI must not expose a full account identifier",
+      "category": "accounts",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "DASH-04",
+      "title": "Account detail view agrees with dashboard",
+      "text": "Selecting an account opens its detail with the same balance and only its own history.",
+      "prd_quote": "Selecting an account opens an account detail view",
+      "category": "accounts",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-01",
+      "title": "Valid transfer is atomic and exact",
+      "text": "Source decreases and destination increases by exactly the amount.",
+      "prd_quote": "source balance decreases by the amount and the destination balance increases by the same amount",
+      "category": "transfers",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-02",
+      "title": "Transfer creates one record in both histories",
+      "text": "One completed record appears in both account histories with amount, source, destination, status and memo.",
+      "prd_quote": "creates one completed transfer record that can be found in both relevant account histories",
+      "category": "transfers",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-03",
+      "title": "Same-account transfer rejected",
+      "text": "Source and destination must differ; rejection changes nothing.",
+      "prd_quote": "Same-account transfers must be rejected",
+      "category": "validation",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-04",
+      "title": "Invalid amounts rejected",
+      "text": "Blank, zero, negative, non-numeric and >2-decimal amounts are rejected with a message and change nothing.",
+      "prd_quote": "Blank, zero, negative, non-numeric, and over-precision values must be rejected",
+      "category": "validation",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-05",
+      "title": "Insufficient funds rejected",
+      "text": "An amount above the source balance is rejected; balances and history unchanged.",
+      "prd_quote": "The amount must not exceed the source account's available balance",
+      "category": "validation",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "XFER-06",
+      "title": "Success shown only after commit; failures explained",
+      "text": "Success appears only when committed; rejections say the transfer did not complete.",
+      "prd_quote": "The UI reports success only after the transfer has been committed",
+      "category": "transfers",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "XFER-07",
+      "title": "Transfer survives refresh",
+      "text": "After a successful transfer, a reload shows the same updated balances on every view.",
+      "prd_quote": "Refreshing after a successful transfer must preserve the updated balances",
+      "category": "transfers",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "XFER-08",
+      "title": "No duplicate submission",
+      "text": "A rapid second click does not submit the transfer twice.",
+      "prd_quote": "prevent accidental duplicate submission",
+      "category": "transfers",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "HIST-01",
+      "title": "Rows show required fields and direction",
+      "text": "Each row shows date/time, description, type, account, signed amount and status.",
+      "prd_quote": "Amount direction should be clear",
+      "category": "history",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "HIST-02",
+      "title": "Filters show only matching rows",
+      "text": "Account, type and status filters (alone or combined) show only rows matching all of them.",
+      "prd_quote": "every displayed row must satisfy all selected filters",
+      "category": "history",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "HIST-03",
+      "title": "Date range is inclusive",
+      "text": "Transactions on the start or end date are included.",
+      "prd_quote": "The start and end dates are inclusive",
+      "category": "history",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "HIST-04",
+      "title": "Empty result shows a clear empty state",
+      "text": "A filter with no matches shows an empty state, not an error or unrelated rows.",
+      "prd_quote": "An empty result set must show a clear empty state",
+      "category": "history",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "HIST-05",
+      "title": "Clearing filters restores full history",
+      "text": "Clear filters returns to the unfiltered list.",
+      "prd_quote": "Clearing filters restores the unfiltered history",
+      "category": "history",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "PROF-01",
+      "title": "Profile shows masked synthetic details",
+      "text": "Profile shows display name and a masked email.",
+      "prd_quote": "display name and a masked email address",
+      "category": "profile",
+      "priority": "medium",
+      "explicit": true
+    },
+    {
+      "id": "PROF-02",
+      "title": "Profile leaks no secrets or identifiers",
+      "text": "No passwords, tokens or full account identifiers on the profile.",
+      "prd_quote": "must not reveal passwords, authentication tokens, full account identifiers",
+      "category": "profile",
+      "priority": "high",
+      "explicit": true
+    },
+    {
+      "id": "UI-01",
+      "title": "Usable at narrow widths",
+      "text": "At a 390px-wide window, key pages fit without sideways scrolling and controls stay visible.",
+      "prd_quote": "remains usable at narrower widths",
+      "category": "ui",
+      "priority": "low",
+      "explicit": true
+    },
+    {
+      "id": "UI-02",
+      "title": "Links lead to the labelled destination",
+      "text": "Navigation links open the page they name.",
+      "prd_quote": "Navigation links and buttons lead to the labeled destination",
+      "category": "ui",
+      "priority": "low",
+      "explicit": true
+    },
+    {
+      "id": "UI-03",
+      "title": "Recoverable errors allow retry or return",
+      "text": "An error state offers a way to retry or go back to the dashboard.",
+      "prd_quote": "A recoverable error must leave the user able to retry or return to the dashboard",
+      "category": "ui",
+      "priority": "low",
+      "explicit": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SC-AUTH-01",
+      "requirement_ids": [
+        "AUTH-01",
+        "AUTH-02"
+      ],
+      "type": "normal",
+      "title": "Enter Demo opens the dashboard for the demo customer",
+      "rationale": "Gateway to every other test",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "url_contains",
+          "description": "Dashboard URL",
+          "value": "/dashboard"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Active customer shown",
+          "target": "testid=active-customer"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Customer name shown",
+          "value": "Avery Demo"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Log out offered",
+          "target": "role=button[name=Log out]"
+        }
+      ],
+      "expected": "Dashboard with the demo customer's name and a Log out button."
+    },
+    {
+      "id": "SC-AUTH-02",
+      "requirement_ids": [
+        "AUTH-04"
+      ],
+      "type": "normal",
+      "title": "Refreshing the dashboard keeps the session",
+      "rationale": "Session stored only in memory would be lost",
+      "steps": [
+        {
+          "op": "reload"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "url_contains",
+          "description": "Still on dashboard",
+          "value": "/dashboard"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Still signed in",
+          "target": "testid=active-customer"
+        }
+      ],
+      "expected": "Still signed in after reload."
+    },
+    {
+      "id": "SC-AUTH-03",
+      "requirement_ids": [
+        "AUTH-03"
+      ],
+      "type": "normal",
+      "title": "Log out returns to the landing page",
+      "rationale": "Logout must end the session",
+      "steps": [
+        {
+          "op": "click",
+          "target": "role=button[name=Log out]",
+          "note": "Click 'Log out'"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "url_not_contains",
+          "description": "Left the dashboard",
+          "value": "/dashboard"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Enter Demo offered again",
+          "target": "role=button[name=Enter Demo]"
+        },
+        {
+          "kind": "element_absent",
+          "description": "No signed-in customer",
+          "target": "testid=active-customer"
+        }
+      ],
+      "expected": "Landing page with Enter Demo."
+    },
+    {
+      "id": "SC-AUTH-04",
+      "requirement_ids": [
+        "AUTH-03"
+      ],
+      "type": "negative",
+      "title": "After logout, direct navigation to protected pages is blocked",
+      "rationale": "Client-only guards are often missing on deep links",
+      "steps": [
+        {
+          "op": "click",
+          "target": "role=button[name=Log out]",
+          "note": "Click 'Log out'"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Type /transactions in the address bar"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "m1"
+        },
+        {
+          "op": "goto",
+          "value": "/accounts/00000000-0000-0000-0000-000000000101",
+          "note": "Type an account detail URL in the address bar"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "element_absent",
+          "description": "No account data shown",
+          "target": "testid=account-balance"
+        },
+        {
+          "kind": "element_absent",
+          "description": "No signed-in customer",
+          "target": "testid=active-customer"
+        },
+        {
+          "kind": "url_not_contains",
+          "description": "Redirected away from account page",
+          "value": "/accounts/"
+        }
+      ],
+      "expected": "Landing page or access-required state; no data."
+    },
+    {
+      "id": "SC-AUTH-05",
+      "requirement_ids": [
+        "AUTH-03"
+      ],
+      "type": "edge",
+      "title": "After logout, Back and refresh do not restore access",
+      "rationale": "Cached pages and stored tokens can leak sessions",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Log out]",
+          "note": "Click 'Log out'"
+        },
+        {
+          "op": "back"
+        },
+        {
+          "op": "reload"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "element_absent",
+          "description": "No signed-in customer after Back + reload",
+          "target": "testid=active-customer"
+        },
+        {
+          "kind": "element_absent",
+          "description": "No transactions visible",
+          "target": "testid=transaction-table"
+        }
+      ],
+      "expected": "Still logged out."
+    },
+    {
+      "id": "SC-DASH-01",
+      "requirement_ids": [
+        "DASH-01"
+      ],
+      "type": "normal",
+      "title": "Dashboard lists checking and savings with name, type and mask",
+      "rationale": "Core content",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "text_visible",
+          "description": "Checking account listed",
+          "value": "Everyday Checking"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Savings account listed",
+          "value": "Rainy Day Savings"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Each card shows type, masked id and USD balance",
+          "target": "css=[data-testid=account-card]",
+          "value": "(Checking|Savings).*\u2022+ ?\\d{4}.*\\$[\\d,]+\\.\\d{2}"
+        }
+      ],
+      "expected": "Both accounts with name, type, masked number and balance."
+    },
+    {
+      "id": "SC-DASH-02",
+      "requirement_ids": [
+        "DASH-02"
+      ],
+      "type": "normal",
+      "title": "Balances use $ and exactly two decimals",
+      "rationale": "Float formatting bugs",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "text_matches",
+          "description": "Checking balance format",
+          "target": "css=[data-testid=account-balance] >> nth=0",
+          "value": "^[\u2212-]?\\$[\\d,]+\\.\\d{2}(\\s?USD)?$"
+        },
+        {
+          "kind": "text_matches",
+          "description": "Savings balance format",
+          "target": "css=[data-testid=account-balance] >> nth=1",
+          "value": "^[\u2212-]?\\$[\\d,]+\\.\\d{2}(\\s?USD)?$"
+        }
+      ],
+      "expected": "Two-decimal USD balances."
+    },
+    {
+      "id": "SC-DASH-03",
+      "requirement_ids": [
+        "DASH-03"
+      ],
+      "type": "negative",
+      "title": "No full account identifier on dashboard or detail",
+      "rationale": "Privacy",
+      "steps": [
+        {
+          "op": "click",
+          "target": "css=a[href*='/accounts/'] >> nth=0",
+          "note": "Open the first account's detail page"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "text_not_matches",
+          "description": "No long digit sequence (full account number)",
+          "value": "\\d{8,}"
+        },
+        {
+          "kind": "text_not_matches",
+          "description": "No internal account UUID in visible text",
+          "value": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}"
+        }
+      ],
+      "expected": "Only masked identifiers."
+    },
+    {
+      "id": "SC-DASH-04",
+      "requirement_ids": [
+        "DASH-04"
+      ],
+      "type": "normal",
+      "title": "Checking detail: same balance as dashboard, only its own history",
+      "rationale": "Detail views often read stale or unfiltered data",
+      "steps": [
+        {
+          "op": "capture",
+          "target": "css=[data-testid=account-balance] >> nth=0",
+          "value": "number",
+          "var": "dash_bal",
+          "note": "Read Checking balance on the dashboard"
+        },
+        {
+          "op": "click",
+          "target": "css=a[href*='/accounts/00000000-0000-0000-0000-000000000101']",
+          "note": "Click the Everyday Checking card"
+        },
+        {
+          "op": "capture",
+          "target": "testid=account-balance",
+          "value": "number",
+          "var": "detail_bal",
+          "note": "Read balance on the detail page"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "url_contains",
+          "description": "Detail page opened",
+          "value": "/accounts/"
+        },
+        {
+          "kind": "expr",
+          "description": "Detail balance equals dashboard balance",
+          "expr": "{detail_bal} == {dash_bal}"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Every history row involves Checking (\u2022\u2022\u2022\u2022 1042)",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "1042"
+        }
+      ],
+      "expected": "Same balance; only Checking rows."
+    },
+    {
+      "id": "SC-DASH-05",
+      "requirement_ids": [
+        "DASH-04"
+      ],
+      "type": "normal",
+      "title": "Savings detail: same balance as dashboard, only its own history",
+      "rationale": "Second account exercises the per-account filter",
+      "steps": [
+        {
+          "op": "capture",
+          "target": "css=[data-testid=account-balance] >> nth=1",
+          "value": "number",
+          "var": "dash_bal",
+          "note": "Read Savings balance on the dashboard"
+        },
+        {
+          "op": "click",
+          "target": "css=a[href*='/accounts/00000000-0000-0000-0000-000000000102']",
+          "note": "Click the Rainy Day Savings card"
+        },
+        {
+          "op": "capture",
+          "target": "testid=account-balance",
+          "value": "number",
+          "var": "detail_bal",
+          "note": "Read balance on the detail page"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Detail balance equals dashboard balance",
+          "expr": "{detail_bal} == {dash_bal}"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Every history row involves Savings (\u2022\u2022\u2022\u2022 7781)",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "7781"
+        }
+      ],
+      "expected": "Same balance; only Savings rows."
+    },
+    {
+      "id": "SC-XFER-01",
+      "requirement_ids": [
+        "XFER-01",
+        "XFER-06"
+      ],
+      "type": "normal",
+      "title": "Transfer $12.34 Checking \u2192 Savings moves exactly that amount",
+      "rationale": "A success message is not proof; read both balances",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "12.34",
+          "note": "Enter amount '12.34'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Checking decreased by 12.34",
+          "expr": "{chk_after} == {chk_before} - 12.34"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings increased by 12.34",
+          "expr": "{sav_after} == {sav_before} + 12.34"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Success confirmation shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Exactly one new transaction",
+          "expr": "{tx_after} == {tx_before} + 1"
+        },
+        {
+          "kind": "no_server_errors",
+          "description": "No server errors"
+        }
+      ],
+      "expected": "Both balances move by 12.34; one new record; confirmation shown."
+    },
+    {
+      "id": "SC-XFER-02",
+      "requirement_ids": [
+        "XFER-01"
+      ],
+      "type": "normal",
+      "title": "Transfer $20.00 Savings \u2192 Checking (reverse direction)",
+      "rationale": "Direction-specific bugs",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Rainy Day Savings",
+          "note": "Choose From account: Rainy Day Savings"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Everyday Checking",
+          "note": "Choose To account: Everyday Checking"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "20.00",
+          "note": "Enter amount '20.00'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Savings decreased by 20",
+          "expr": "{sav_after} == {sav_before} - 20"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking increased by 20",
+          "expr": "{chk_after} == {chk_before} + 20"
+        }
+      ],
+      "expected": "Balances move by 20."
+    },
+    {
+      "id": "SC-XFER-03",
+      "requirement_ids": [
+        "XFER-01"
+      ],
+      "type": "edge",
+      "title": "Smallest amount $0.01 is transferred exactly",
+      "rationale": "Rounding at the smallest unit",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "0.01",
+          "note": "Enter amount '0.01'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Checking decreased by 0.01",
+          "expr": "{chk_after} == {chk_before} - 0.01"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings increased by 0.01",
+          "expr": "{sav_after} == {sav_before} + 0.01"
+        }
+      ],
+      "expected": "Exact one-cent move."
+    },
+    {
+      "id": "SC-XFER-04",
+      "requirement_ids": [
+        "XFER-02"
+      ],
+      "type": "normal",
+      "title": "Transfer with memo appears in both account histories",
+      "rationale": "Ledger and balances can drift apart; memo often dropped",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "7.25",
+          "note": "Enter amount '7.25'"
+        },
+        {
+          "op": "fill",
+          "target": "label=Memo (optional)",
+          "value": "QA memo check",
+          "note": "Enter memo 'QA memo check'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/accounts/00000000-0000-0000-0000-000000000101",
+          "note": "Open Everyday Checking detail"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row] >> nth=0",
+          "value": "text",
+          "var": "chk_row",
+          "note": "Read the newest Checking history row"
+        },
+        {
+          "op": "goto",
+          "value": "/accounts/00000000-0000-0000-0000-000000000102",
+          "note": "Open Rainy Day Savings detail"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row] >> nth=0",
+          "value": "text",
+          "var": "sav_row",
+          "note": "Read the newest Savings history row"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "Checking history has the $7.25 transfer",
+          "target": "chk_row",
+          "value": "7\\.25"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Savings history has the $7.25 transfer",
+          "target": "sav_row",
+          "value": "7\\.25"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Record shows Completed status",
+          "target": "chk_row",
+          "value": "Completed"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Record names source and destination",
+          "target": "chk_row",
+          "value": "Everyday Checking.*Rainy Day Savings"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Memo shown in Checking history",
+          "target": "chk_row",
+          "value": "QA memo check"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Memo shown in Savings history",
+          "target": "sav_row",
+          "value": "QA memo check"
+        },
+        {
+          "kind": "expr",
+          "description": "Exactly one record in the combined history",
+          "expr": "{tx_after} == {tx_before} + 1"
+        }
+      ],
+      "expected": "One completed record with amount, both accounts, status and memo, in both histories."
+    },
+    {
+      "id": "SC-XFER-05",
+      "requirement_ids": [
+        "XFER-07"
+      ],
+      "type": "normal",
+      "title": "Balances after a transfer persist on reload and match the dashboard",
+      "rationale": "Optimistic UI updates may never be saved",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "3.00",
+          "note": "Enter amount '3.00'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "reload"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Checking balance after reload"
+        },
+        {
+          "op": "goto",
+          "value": "/dashboard",
+          "note": "Open Dashboard"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=account-balance] >> nth=0",
+          "value": "number",
+          "var": "dash_chk",
+          "note": "Read Checking balance on the dashboard"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Reloaded balance reflects the transfer",
+          "expr": "{chk_after} == {chk_before} - 3"
+        },
+        {
+          "kind": "expr",
+          "description": "Dashboard agrees",
+          "expr": "{dash_chk} == {chk_after}"
+        }
+      ],
+      "expected": "Balance -3.00 after reload and on dashboard."
+    },
+    {
+      "id": "SC-XFER-06",
+      "requirement_ids": [
+        "XFER-08"
+      ],
+      "type": "edge",
+      "title": "Double-clicking Transfer submits only once",
+      "rationale": "Duplicate submissions double-charge",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "2.00",
+          "note": "Enter amount '2.00'"
+        },
+        {
+          "op": "double_click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Double-click 'Transfer funds' rapidly"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "request_count",
+          "description": "Only one transfer request sent",
+          "value": "POST /api/transfers",
+          "expr": "== 1"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking decreased by 2.00 once",
+          "expr": "{chk_after} == {chk_before} - 2"
+        },
+        {
+          "kind": "expr",
+          "description": "Only one record created",
+          "expr": "{tx_after} == {tx_before} + 1"
+        }
+      ],
+      "expected": "Exactly one transfer."
+    },
+    {
+      "id": "SC-XFER-07",
+      "requirement_ids": [
+        "XFER-01"
+      ],
+      "type": "edge",
+      "title": "Transfer exactly the full Savings balance (then move it back)",
+      "rationale": "Boundary: amount equal to available balance must be allowed",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Rainy Day Savings",
+          "note": "Choose From account: Rainy Day Savings"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Everyday Checking",
+          "note": "Choose To account: Everyday Checking"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "={sav_before}",
+          "note": "Enter amount {sav_before}"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "={sav_before}",
+          "note": "Enter the same amount to restore Savings"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds' (restore)"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "Full-balance transfer accepted",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings is exactly 0.00",
+          "expr": "{sav_after} == 0"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking received the full amount",
+          "expr": "{chk_after} == {chk_before} + {sav_before}"
+        }
+      ],
+      "expected": "Allowed; Savings reaches 0.00."
+    },
+    {
+      "id": "SC-XFER-08",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "negative",
+      "title": "Blank amount is rejected",
+      "rationale": "Required-field handling",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "",
+          "note": "Enter amount ''"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-09",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "edge",
+      "title": "Zero amount is rejected",
+      "rationale": "Boundary at 0",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "0",
+          "note": "Enter amount '0'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-10",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "edge",
+      "title": "Zero written as 0.00 is rejected",
+      "rationale": "Boundary at 0 with decimals",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "0.00",
+          "note": "Enter amount '0.00'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-11",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "negative",
+      "title": "Negative amount is rejected",
+      "rationale": "A negative transfer moves money backwards",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "-5.00",
+          "note": "Enter amount '-5.00'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-12",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "negative",
+      "title": "Non-numeric amount is rejected",
+      "rationale": "Parsing",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "abc",
+          "note": "Enter amount 'abc'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-13",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "edge",
+      "title": "Three decimal places are rejected",
+      "rationale": "PRD caps precision at two decimals",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "1.005",
+          "note": "Enter amount '1.005'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-14",
+      "requirement_ids": [
+        "XFER-04",
+        "XFER-06"
+      ],
+      "type": "edge",
+      "title": "Scientific notation is rejected",
+      "rationale": "Number parsers accept 1e2 = 100",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "1e2",
+          "note": "Enter amount '1e2'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected with a clear message; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-15",
+      "requirement_ids": [
+        "XFER-03",
+        "XFER-06"
+      ],
+      "type": "negative",
+      "title": "Same source and destination is rejected",
+      "rationale": "Self-transfer loops",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Everyday Checking",
+          "note": "Choose To account: Everyday Checking"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "5.00",
+          "note": "Enter amount '5.00'"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected; nothing changes."
+    },
+    {
+      "id": "SC-XFER-16",
+      "requirement_ids": [
+        "XFER-05",
+        "XFER-06"
+      ],
+      "type": "negative",
+      "title": "Amount above the available balance is rejected",
+      "rationale": "Overdrafts break money integrity",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking",
+          "note": "Choose From account: Everyday Checking"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Rainy Day Savings",
+          "note": "Choose To account: Rainy Day Savings"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "={chk_before} + 100",
+          "note": "Enter amount {chk_before} + 100"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "var_matches",
+          "description": "Message mentions insufficient funds",
+          "target": "msg",
+          "value": "(?i)insufficient|exceed|available"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected as insufficient funds; balances and history unchanged."
+    },
+    {
+      "id": "SC-XFER-17",
+      "requirement_ids": [
+        "XFER-05"
+      ],
+      "type": "edge",
+      "title": "Balance + $0.01 is rejected",
+      "rationale": "Off-by-one at the balance boundary",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_before",
+          "note": "Read the transaction count ('Showing N transactions') as tx_before"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_before",
+          "note": "Read Everyday Checking balance as chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_before",
+          "note": "Read Rainy Day Savings balance as sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Rainy Day Savings",
+          "note": "Choose From account: Rainy Day Savings"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Everyday Checking",
+          "note": "Choose To account: Everyday Checking"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount (USD)",
+          "value": "={sav_before} + 0.01",
+          "note": "Enter amount {sav_before} + 0.01"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Transfer funds]",
+          "note": "Click 'Transfer funds'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg",
+          "note": "Read the confirmation / error shown"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer (fresh page load)"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=0",
+          "value": "number",
+          "var": "chk_after",
+          "note": "Read Everyday Checking balance as chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transfer-balance] >> nth=1",
+          "value": "number",
+          "var": "sav_after",
+          "note": "Read Rainy Day Savings balance as sav_after"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "tx_after",
+          "note": "Read the transaction count ('Showing N transactions') as tx_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "UI explains the transfer did not complete",
+          "target": "msg",
+          "value": "not completed|invalid|must|insufficient|error|enter"
+        },
+        {
+          "kind": "var_not_matches",
+          "description": "No success state is shown",
+          "target": "msg",
+          "value": "Transfer complete"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "No transaction created",
+          "expr": "{tx_after} == {tx_before}"
+        }
+      ],
+      "expected": "Rejected; nothing changes."
+    },
+    {
+      "id": "SC-HIST-01",
+      "requirement_ids": [
+        "HIST-01"
+      ],
+      "type": "normal",
+      "title": "Every row shows date/time, type, account, signed amount and status",
+      "rationale": "Missing columns or ambiguous amounts",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Date and time on every row",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "^\\w{3} \\d{1,2}, \\d{4}, \\d{1,2}:\\d{2} [AP]M"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Type on every row",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\t(Deposit|Withdrawal|Transfer)\\t"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Amount direction on every row",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "Money in|Money out|Moved between|No change"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Status on every row",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "(Completed|Pending|Failed)\\s*$"
+        }
+      ],
+      "expected": "All fields present on every row."
+    },
+    {
+      "id": "SC-HIST-02",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "normal",
+      "title": "Type = Deposit shows only deposits",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-type",
+          "value": "Deposit",
+          "note": "Set filter to Deposit"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row matches Deposit",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tDeposit\\t"
+        },
+        {
+          "kind": "expr",
+          "description": "At least one row shown",
+          "expr": "{n} >= 1"
+        }
+      ],
+      "expected": "Only Deposit rows."
+    },
+    {
+      "id": "SC-HIST-03",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "normal",
+      "title": "Type = Withdrawal shows only withdrawals",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-type",
+          "value": "Withdrawal",
+          "note": "Set filter to Withdrawal"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row matches Withdrawal",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tWithdrawal\\t"
+        },
+        {
+          "kind": "expr",
+          "description": "At least one row shown",
+          "expr": "{n} >= 1"
+        }
+      ],
+      "expected": "Only Withdrawal rows."
+    },
+    {
+      "id": "SC-HIST-04",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "normal",
+      "title": "Status = Pending shows only pending",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-status",
+          "value": "Pending",
+          "note": "Set filter to Pending"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row matches Pending",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tPending\\s*$"
+        },
+        {
+          "kind": "expr",
+          "description": "At least one row shown",
+          "expr": "{n} >= 1"
+        }
+      ],
+      "expected": "Only Pending rows."
+    },
+    {
+      "id": "SC-HIST-05",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "normal",
+      "title": "Status = Failed shows only failed",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-status",
+          "value": "Failed",
+          "note": "Set filter to Failed"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row matches Failed",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tFailed\\s*$"
+        },
+        {
+          "kind": "expr",
+          "description": "At least one row shown",
+          "expr": "{n} >= 1"
+        }
+      ],
+      "expected": "Only Failed rows."
+    },
+    {
+      "id": "SC-HIST-06",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "normal",
+      "title": "Account = Savings shows only Savings rows",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-account",
+          "value": "Rainy Day Savings",
+          "note": "Set filter to Rainy Day Savings"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row matches Rainy Day Savings",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "7781"
+        },
+        {
+          "kind": "expr",
+          "description": "At least one row shown",
+          "expr": "{n} >= 1"
+        }
+      ],
+      "expected": "Only Rainy Day Savings rows."
+    },
+    {
+      "id": "SC-HIST-07",
+      "requirement_ids": [
+        "HIST-02"
+      ],
+      "type": "edge",
+      "title": "Combined filters: Deposit + Completed + Checking",
+      "rationale": "Filters applied with OR instead of AND",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-type",
+          "value": "Deposit"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-status",
+          "value": "Completed"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-account",
+          "value": "Everyday Checking"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "all_rows_match",
+          "description": "Every row is a Deposit",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tDeposit\\t"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Every row is Completed",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "\\tCompleted\\s*$"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Every row is Checking",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "1042"
+        }
+      ],
+      "expected": "Only rows matching all three."
+    },
+    {
+      "id": "SC-HIST-08",
+      "requirement_ids": [
+        "HIST-03"
+      ],
+      "type": "edge",
+      "title": "Range Jan 3 \u2013 Jan 18, 2025 includes both boundary dates",
+      "rationale": "Inclusive boundaries are often implemented as exclusive",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-start",
+          "value": "2025-01-03",
+          "note": "Set Start date 2025-01-03"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-end",
+          "value": "2025-01-18",
+          "note": "Set End date 2025-01-18"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "testid=transaction-table",
+          "value": "text",
+          "var": "rows",
+          "note": "Read the filtered table"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "Start-date row (Jan 3, Demo payroll) included",
+          "target": "rows",
+          "value": "Demo payroll"
+        },
+        {
+          "kind": "var_matches",
+          "description": "End-date row (Jan 18, Demo groceries) included",
+          "target": "rows",
+          "value": "Demo groceries"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "No rows outside the range",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "^Jan (\\d|1[0-8]), 2025"
+        }
+      ],
+      "expected": "Both Jan 3 and Jan 18 transactions shown."
+    },
+    {
+      "id": "SC-HIST-09",
+      "requirement_ids": [
+        "HIST-03"
+      ],
+      "type": "edge",
+      "title": "Single-day range (Mar 4 \u2013 Mar 4, 2025) shows that day's transaction",
+      "rationale": "Start = end must still include the day; evening Pacific times cross UTC midnight",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-start",
+          "value": "2025-03-04"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-end",
+          "value": "2025-03-04"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "At least one row for Mar 4",
+          "expr": "{n} >= 1"
+        },
+        {
+          "kind": "all_rows_match",
+          "description": "Rows are dated Mar 4, 2025",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "^Mar 4, 2025"
+        }
+      ],
+      "expected": "The Mar 4 'Demo utilities' row is shown."
+    },
+    {
+      "id": "SC-HIST-10",
+      "requirement_ids": [
+        "HIST-04"
+      ],
+      "type": "edge",
+      "title": "A range with no transactions shows a clear empty state",
+      "rationale": "Empty results often render errors or stale rows",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-start",
+          "value": "2030-01-01"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-end",
+          "value": "2030-01-31"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "css=[data-testid=transaction-row]",
+          "value": "count",
+          "var": "n",
+          "note": "Count rows shown"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "No rows shown",
+          "expr": "{n} == 0"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Empty-state message",
+          "value": "No transactions"
+        },
+        {
+          "kind": "text_absent",
+          "description": "Not an error state",
+          "value": "couldn't load"
+        }
+      ],
+      "expected": "Empty state, no rows, no error."
+    },
+    {
+      "id": "SC-HIST-11",
+      "requirement_ids": [
+        "HIST-05"
+      ],
+      "type": "normal",
+      "title": "Clear filters restores the full list",
+      "rationale": "Filter state sticking",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "all",
+          "note": "Read total count"
+        },
+        {
+          "op": "select",
+          "target": "css=#filter-type",
+          "value": "Withdrawal"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "filtered",
+          "note": "Read filtered count"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Clear filters]",
+          "note": "Click 'Clear filters'"
+        },
+        {
+          "op": "capture",
+          "target": "testid=result-count",
+          "value": "number",
+          "var": "after",
+          "note": "Read count after clearing"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Filter narrowed the list",
+          "expr": "{filtered} < {all}"
+        },
+        {
+          "kind": "expr",
+          "description": "Clearing restores the full count",
+          "expr": "{after} == {all}"
+        }
+      ],
+      "expected": "Full list restored."
+    },
+    {
+      "id": "SC-PROF-01",
+      "requirement_ids": [
+        "PROF-01"
+      ],
+      "type": "normal",
+      "title": "Profile shows display name and masked email",
+      "rationale": "Privacy",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/profile",
+          "note": "Open Profile"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "text_visible",
+          "description": "Display name shown",
+          "value": "Avery Demo"
+        },
+        {
+          "kind": "text_matches",
+          "description": "Email is masked",
+          "target": "testid=profile-email",
+          "value": "^\\w\\*+@"
+        }
+      ],
+      "expected": "Name and masked email."
+    },
+    {
+      "id": "SC-PROF-02",
+      "requirement_ids": [
+        "PROF-02"
+      ],
+      "type": "negative",
+      "title": "Profile reveals no tokens, passwords or full identifiers",
+      "rationale": "Data leakage",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/profile",
+          "note": "Open Profile"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "text_not_matches",
+          "description": "No password or token values",
+          "value": "(?i)(password|token|secret)\\s*[:=]"
+        },
+        {
+          "kind": "text_not_matches",
+          "description": "No full UUID-style identifiers",
+          "value": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}"
+        },
+        {
+          "kind": "text_not_matches",
+          "description": "No long account numbers",
+          "value": "\\d{8,}"
+        }
+      ],
+      "expected": "Only synthetic, masked details."
+    },
+    {
+      "id": "SC-UI-01",
+      "requirement_ids": [
+        "UI-01"
+      ],
+      "type": "edge",
+      "title": "Transfer page at 390px width fits and keeps the submit button",
+      "rationale": "Responsive layout",
+      "steps": [
+        {
+          "op": "set_viewport",
+          "value": "390x844"
+        },
+        {
+          "op": "goto",
+          "value": "/transfer",
+          "note": "Open Transfer"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "no_horizontal_overflow",
+          "description": "No sideways scrolling"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Submit still visible",
+          "target": "role=button[name=Transfer funds]"
+        }
+      ],
+      "expected": "Usable on a narrow window."
+    },
+    {
+      "id": "SC-UI-02",
+      "requirement_ids": [
+        "UI-01"
+      ],
+      "type": "edge",
+      "title": "Transactions page at 390px width fits",
+      "rationale": "Wide tables overflow on small screens",
+      "steps": [
+        {
+          "op": "set_viewport",
+          "value": "390x844"
+        },
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "no_horizontal_overflow",
+          "description": "No sideways scrolling"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Filters still visible",
+          "target": "role=button[name=Apply filters]"
+        }
+      ],
+      "expected": "Usable on a narrow window."
+    },
+    {
+      "id": "SC-UI-03",
+      "requirement_ids": [
+        "UI-02"
+      ],
+      "type": "normal",
+      "title": "Header links open their pages",
+      "rationale": "Broken navigation",
+      "steps": [
+        {
+          "op": "click",
+          "target": "role=link[name=Profile]",
+          "note": "Click 'Profile' in the header"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "url_contains",
+          "description": "Profile URL",
+          "value": "/profile"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Profile content shown",
+          "target": "testid=profile-name"
+        }
+      ],
+      "expected": "Profile page opens."
+    },
+    {
+      "id": "SC-UI-04",
+      "requirement_ids": [
+        "UI-02"
+      ],
+      "type": "normal",
+      "title": "Dashboard 'Transfer funds' link opens the transfer form",
+      "rationale": "Broken call-to-action",
+      "steps": [
+        {
+          "op": "click",
+          "target": "role=link[name=Transfer funds]",
+          "note": "Click 'Transfer funds' on the dashboard"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "url_contains",
+          "description": "Transfer URL",
+          "value": "/transfer"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Transfer form shown",
+          "target": "label=Amount (USD)"
+        }
+      ],
+      "expected": "Transfer form opens."
+    },
+    {
+      "id": "SC-UI-05",
+      "requirement_ids": [
+        "UI-03"
+      ],
+      "type": "negative",
+      "title": "Invalid date range shows a recoverable error with a way back",
+      "rationale": "Dead-end error screens",
+      "steps": [
+        {
+          "op": "goto",
+          "value": "/transactions",
+          "note": "Open Transactions"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-start",
+          "value": "2025-03-01"
+        },
+        {
+          "op": "fill",
+          "target": "css=#filter-end",
+          "value": "2025-02-01"
+        },
+        {
+          "op": "click",
+          "target": "role=button[name=Apply filters]",
+          "note": "Click 'Apply filters'"
+        },
+        {
+          "op": "capture",
+          "value": "messages",
+          "var": "msg"
+        },
+        {
+          "op": "click",
+          "target": "text=Back to dashboard",
+          "note": "Click 'Back to dashboard'"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "var_matches",
+          "description": "Error explains the problem",
+          "target": "msg",
+          "value": "(?i)start date|after|invalid|couldn"
+        },
+        {
+          "kind": "url_contains",
+          "description": "Returned to dashboard",
+          "value": "/dashboard"
+        }
+      ],
+      "expected": "Clear error with a working way back."
+    }
+  ]
+}

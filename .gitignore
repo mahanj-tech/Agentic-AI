@@ -1,0 +1,8 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+.cache/
+artifacts/screenshots/
+# keep the exported report you submit; drop this line if you want to commit artifacts/ in full

@@ -1,0 +1,1086 @@
+{
+  "app_summary": "Northwind Demo Bank: a synthetic banking dashboard with accounts, transfers between own accounts, and a filterable transaction list.",
+  "requirements": [
+    {
+      "id": "REQ-01",
+      "title": "Enter Demo opens dashboard",
+      "text": "Clicking Enter Demo on the landing page opens the dashboard without login.",
+      "prd_quote": "Clicking it opens the dashboard. No login is required.",
+      "category": "navigation",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-02",
+      "title": "Accounts shown with formatted balances",
+      "text": "Each account shows name, masked number and a USD balance with two decimals.",
+      "prd_quote": "balance formatted as US dollars with two decimals",
+      "category": "accounts",
+      "priority": "medium"
+    },
+    {
+      "id": "REQ-03",
+      "title": "Main navigation",
+      "text": "Navigation offers Dashboard, Transfer and Transactions.",
+      "prd_quote": "Navigation offers Dashboard, Transfer and Transactions",
+      "category": "navigation",
+      "priority": "low"
+    },
+    {
+      "id": "REQ-04",
+      "title": "Transfer moves exact amount",
+      "text": "A successful transfer decreases the source and increases the destination by exactly the amount and shows a reference.",
+      "prd_quote": "increases by exactly the transfer amount",
+      "category": "transfers",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-05",
+      "title": "Transfer creates debit and credit records",
+      "text": "Each successful transfer adds a debit row for the source and a credit row for the destination.",
+      "prd_quote": "creates a debit record ... and a credit record",
+      "category": "transactions",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-06",
+      "title": "Amount must be positive with max 2 decimals",
+      "text": "Non-numeric, zero, negative or >2-decimal amounts are rejected with an error and no balance change.",
+      "prd_quote": "a number greater than zero with at most two decimal places",
+      "category": "validation",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-07",
+      "title": "Insufficient funds rejected",
+      "text": "A transfer above the source balance is rejected with an 'Insufficient funds' message.",
+      "prd_quote": "rejected with an \"Insufficient funds\" message",
+      "category": "validation",
+      "priority": "high"
+    },
+    {
+      "id": "REQ-08",
+      "title": "From and To must differ",
+      "text": "Transfers to the same account are rejected.",
+      "prd_quote": "From and To accounts must be different",
+      "category": "validation",
+      "priority": "medium"
+    },
+    {
+      "id": "REQ-09",
+      "title": "Empty amount validation",
+      "text": "Submitting without an amount shows a validation message.",
+      "prd_quote": "An empty amount shows a validation message",
+      "category": "validation",
+      "priority": "medium"
+    },
+    {
+      "id": "REQ-10",
+      "title": "Transactions newest first",
+      "text": "Transactions are listed newest first with date, account, description, type, amount.",
+      "prd_quote": "listed newest first",
+      "category": "transactions",
+      "priority": "medium"
+    },
+    {
+      "id": "REQ-11",
+      "title": "Type filter shows only selected type",
+      "text": "Filtering by Credit or Debit shows only rows of that type.",
+      "prd_quote": "shows only transactions of the selected type",
+      "category": "filters",
+      "priority": "high"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "SC-01-a",
+      "requirement_ids": [
+        "REQ-01"
+      ],
+      "type": "normal",
+      "title": "Enter Demo lands on the account dashboard",
+      "rationale": "Entry flow is the gateway to every other test",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "element_visible",
+          "description": "Accounts heading is shown",
+          "target": "text=Accounts"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Checking account is listed",
+          "value": "Everyday Checking"
+        },
+        {
+          "kind": "url_contains",
+          "description": "URL points at the dashboard",
+          "value": "dashboard"
+        }
+      ],
+      "expected": "After Enter Demo the dashboard with all accounts is visible, no login prompt."
+    },
+    {
+      "id": "SC-02-a",
+      "requirement_ids": [
+        "REQ-02"
+      ],
+      "type": "normal",
+      "title": "Balances use $ and two decimals",
+      "rationale": "Formatting bugs are common with floats",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "text_matches",
+          "description": "Checking balance format",
+          "target": "testid=balance-chk",
+          "value": "^-?\\$[\\d,]+\\.\\d{2}$"
+        },
+        {
+          "kind": "text_matches",
+          "description": "Savings balance format",
+          "target": "testid=balance-sav",
+          "value": "^-?\\$[\\d,]+\\.\\d{2}$"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Masked number shown",
+          "value": "****4021"
+        }
+      ],
+      "expected": "Every balance shows a dollar sign, thousands separators and exactly two decimals."
+    },
+    {
+      "id": "SC-03-a",
+      "requirement_ids": [
+        "REQ-03"
+      ],
+      "type": "normal",
+      "title": "Navigation offers the three sections",
+      "rationale": "Missing navigation blocks whole features",
+      "steps": [],
+      "checks": [
+        {
+          "kind": "element_visible",
+          "description": "Dashboard nav",
+          "target": "role=button[name=Dashboard]"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Transfer nav",
+          "target": "role=button[name=Transfer]"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Transactions nav",
+          "target": "role=button[name=Transactions]"
+        }
+      ],
+      "expected": "Dashboard, Transfer and Transactions are reachable from the navigation."
+    },
+    {
+      "id": "SC-04-a",
+      "requirement_ids": [
+        "REQ-04"
+      ],
+      "type": "normal",
+      "title": "Whole-dollar transfer updates both balances",
+      "rationale": "A success toast does not prove the ledger moved",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "25.00"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Source decreased by 25.00",
+          "expr": "{chk_after} == {chk_before} - 25"
+        },
+        {
+          "kind": "expr",
+          "description": "Destination increased by 25.00",
+          "expr": "{sav_after} == {sav_before} + 25"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Confirmation with reference",
+          "value": "Reference"
+        },
+        {
+          "kind": "no_server_errors",
+          "description": "No server errors"
+        }
+      ],
+      "expected": "Checking -25.00, Savings +25.00, confirmation with reference number."
+    },
+    {
+      "id": "SC-04-b",
+      "requirement_ids": [
+        "REQ-04"
+      ],
+      "type": "edge",
+      "title": "Cents are transferred exactly (10.55)",
+      "rationale": "Float/int handling often drops cents",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "10.55"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Source decreased by 10.55",
+          "expr": "{chk_after} == {chk_before} - 10.55"
+        },
+        {
+          "kind": "expr",
+          "description": "Destination increased by 10.55",
+          "expr": "{sav_after} == {sav_before} + 10.55"
+        }
+      ],
+      "expected": "Both balances move by exactly 10.55."
+    },
+    {
+      "id": "SC-05-a",
+      "requirement_ids": [
+        "REQ-05"
+      ],
+      "type": "normal",
+      "title": "Transfer adds a debit and a credit row",
+      "rationale": "Ledger and balances can drift apart",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transactions",
+          "note": "Click 'Transactions' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "css=#tx-table tbody tr",
+          "value": "count",
+          "var": "rows_before"
+        },
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "5.00"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        },
+        {
+          "op": "click",
+          "target": "Transactions",
+          "note": "Click 'Transactions' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "css=#tx-table tbody tr",
+          "value": "count",
+          "var": "rows_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "Exactly two new rows",
+          "expr": "{rows_after} == {rows_before} + 2"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Debit row names destination",
+          "target": "css=#tx-table",
+          "value": "to High-Yield Savings"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Credit row names source",
+          "target": "css=#tx-table",
+          "value": "from Everyday Checking"
+        }
+      ],
+      "expected": "Two new transactions: debit on Checking, credit on Savings."
+    },
+    {
+      "id": "SC-06-a",
+      "requirement_ids": [
+        "REQ-06"
+      ],
+      "type": "negative",
+      "title": "Negative amount is rejected",
+      "rationale": "Sign handling lets users pull money backwards",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "-50"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "An error message is shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "Error shown, balances unchanged."
+    },
+    {
+      "id": "SC-06-b",
+      "requirement_ids": [
+        "REQ-06"
+      ],
+      "type": "negative",
+      "title": "Non-numeric amount is rejected",
+      "rationale": "Parsing errors",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "abc"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "An error message is shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "Error shown, balances unchanged."
+    },
+    {
+      "id": "SC-06-c",
+      "requirement_ids": [
+        "REQ-06"
+      ],
+      "type": "edge",
+      "title": "Zero amount is rejected",
+      "rationale": "Boundary at 0",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "0"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "An error message is shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "Error shown, balances unchanged."
+    },
+    {
+      "id": "SC-06-d",
+      "requirement_ids": [
+        "REQ-06"
+      ],
+      "type": "edge",
+      "title": "Three decimal places are rejected (1.005)",
+      "rationale": "PRD caps precision at two decimals",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "1.005"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "An error message is shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "Error shown, balances unchanged."
+    },
+    {
+      "id": "SC-07-a",
+      "requirement_ids": [
+        "REQ-07"
+      ],
+      "type": "negative",
+      "title": "Overdraft is rejected with Insufficient funds",
+      "rationale": "Money integrity",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "999999"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "Insufficient funds message",
+          "value": "Insufficient funds"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "'Insufficient funds' shown, balances unchanged."
+    },
+    {
+      "id": "SC-08-a",
+      "requirement_ids": [
+        "REQ-08"
+      ],
+      "type": "negative",
+      "title": "Same source and destination is rejected",
+      "rationale": "Self-transfer loops",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": "5"
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "An error message is shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        }
+      ],
+      "expected": "Error shown, balance unchanged."
+    },
+    {
+      "id": "SC-09-a",
+      "requirement_ids": [
+        "REQ-09"
+      ],
+      "type": "negative",
+      "title": "Empty amount shows validation",
+      "rationale": "Required-field handling",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transfer",
+          "note": "Click 'Transfer' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_before"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_before"
+        },
+        {
+          "op": "select",
+          "target": "label=From account",
+          "value": "Everyday Checking (****4021)"
+        },
+        {
+          "op": "select",
+          "target": "label=To account",
+          "value": "High-Yield Savings (****7788)"
+        },
+        {
+          "op": "fill",
+          "target": "label=Amount",
+          "value": ""
+        },
+        {
+          "op": "click",
+          "target": "css=#submit-transfer",
+          "note": "Click the 'Transfer' submit button"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-chk",
+          "value": "number",
+          "var": "chk_after"
+        },
+        {
+          "op": "capture",
+          "target": "testid=balance-sav",
+          "value": "number",
+          "var": "sav_after"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "error_shown",
+          "description": "Validation message shown"
+        },
+        {
+          "kind": "expr",
+          "description": "Checking balance unchanged",
+          "expr": "{chk_after} == {chk_before}"
+        },
+        {
+          "kind": "expr",
+          "description": "Savings balance unchanged",
+          "expr": "{sav_after} == {sav_before}"
+        }
+      ],
+      "expected": "Validation message shown, nothing submitted."
+    },
+    {
+      "id": "SC-10-a",
+      "requirement_ids": [
+        "REQ-10"
+      ],
+      "type": "normal",
+      "title": "Newest transaction appears first",
+      "rationale": "Sort order",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transactions",
+          "note": "Click 'Transactions' in the top navigation"
+        },
+        {
+          "op": "capture",
+          "target": "css=#tx-table tbody tr:first-child td:first-child",
+          "value": "text",
+          "var": "first_date"
+        },
+        {
+          "op": "capture",
+          "target": "css=#tx-table tbody tr:last-child td:first-child",
+          "value": "text",
+          "var": "last_date"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "expr",
+          "description": "First row is not older than last row",
+          "expr": "{first_date} >= {last_date}"
+        },
+        {
+          "kind": "element_visible",
+          "description": "Amount column present",
+          "target": "text=Amount"
+        }
+      ],
+      "expected": "Rows sorted newest first."
+    },
+    {
+      "id": "SC-11-a",
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "type": "normal",
+      "title": "Debit filter shows only debits",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transactions",
+          "note": "Click 'Transactions' in the top navigation"
+        },
+        {
+          "op": "select",
+          "target": "label=Type",
+          "value": "Debit"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "text_absent",
+          "description": "No credit rows in table",
+          "target": "css=#tx-table tbody",
+          "value": "credit"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Debit rows present",
+          "target": "css=#tx-table tbody",
+          "value": "debit"
+        }
+      ],
+      "expected": "Only debit rows."
+    },
+    {
+      "id": "SC-11-b",
+      "requirement_ids": [
+        "REQ-11"
+      ],
+      "type": "normal",
+      "title": "Credit filter shows only credits",
+      "rationale": "Filter logic",
+      "steps": [
+        {
+          "op": "click",
+          "target": "Transactions",
+          "note": "Click 'Transactions' in the top navigation"
+        },
+        {
+          "op": "select",
+          "target": "label=Type",
+          "value": "Credit"
+        }
+      ],
+      "checks": [
+        {
+          "kind": "text_absent",
+          "description": "No debit rows in table",
+          "target": "css=#tx-table tbody",
+          "value": "debit"
+        },
+        {
+          "kind": "text_visible",
+          "description": "Credit rows present",
+          "target": "css=#tx-table tbody",
+          "value": "credit"
+        }
+      ],
+      "expected": "Only credit rows."
+    }
+  ]
+}
